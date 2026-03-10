@@ -18,6 +18,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [severity, setSeverity] = useState(0);
   const [status, setStatus] = useState("all");
+  const [uiError, setUiError] = useState("");
 
   const params = useMemo(() => {
     const p = new URLSearchParams();
@@ -28,31 +29,26 @@ export default function Home() {
   }, [search, severity, status]);
 
   const refreshAll = useCallback(async (authToken: string) => {
-    const [ticketsData, dashboardData] = await Promise.all([
-      fetchTickets(authToken, params),
-      fetchDashboard(authToken),
-    ]);
-    setTickets(ticketsData);
-    setDashboard(dashboardData);
+    try {
+      const [ticketsData, dashboardData] = await Promise.all([
+        fetchTickets(authToken, params),
+        fetchDashboard(authToken),
+      ]);
+      setUiError("");
+      setTickets(ticketsData);
+      setDashboard(dashboardData);
+    } catch (err) {
+      setUiError(err instanceof Error ? err.message : "Failed to refresh data");
+    }
   }, [params]);
 
   useEffect(() => {
     if (!token) return;
-    let active = true;
-    const run = async () => {
-      const [ticketsData, dashboardData] = await Promise.all([
-        fetchTickets(token, params),
-        fetchDashboard(token),
-      ]);
-      if (!active) return;
-      setTickets(ticketsData);
-      setDashboard(dashboardData);
-    };
-    void run();
-    return () => {
-      active = false;
-    };
-  }, [token, params]);
+    const timer = setTimeout(() => {
+      void refreshAll(token);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [token, refreshAll]);
 
   useEffect(() => {
     if (!token) return;
@@ -74,6 +70,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 p-6 text-slate-100">
       <h1 className="mb-4 text-2xl font-bold text-cyan-300">Wazuh SOC Ticketing Dashboard</h1>
+      {uiError && <p className="mb-3 rounded border border-rose-500/50 bg-rose-950/40 p-2 text-sm text-rose-300">{uiError}</p>}
       <KpiCards tickets={tickets} />
       <div className="my-4 flex gap-2">
         <input className="rounded border border-slate-700 bg-slate-900 p-2" placeholder="Search description" value={search} onChange={(e) => setSearch(e.target.value)} />

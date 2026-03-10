@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import json
+import httpx
 from datetime import datetime, timezone
 from fastapi import Depends, FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .indexer import indexer_delete, indexer_get, indexer_post, indexer_post_ndjson
+from .indexer import indexer_get, indexer_post, indexer_post_ndjson
 from .models import (
     AuthLoginRequest,
     BulkAssignRequest,
@@ -31,10 +32,26 @@ app.add_middleware(
 
 
 async def verify_credentials(username: str, password: str) -> dict:
-    response = await indexer_get("/_plugins/_security/authinfo", username, password)
+    try:
+        response = await indexer_get("/_plugins/_security/authinfo", username, password)
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=503, detail="Cannot reach Wazuh Indexer") from exc
+
     if response.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid Wazuh Indexer credentials")
+        detail = "Invalid Wazuh Indexer credentials"
+        try:
+            payload = response.json()
+            detail = payload.get("detail") or payload.get("message") or detail
+        except Exception:
+            if response.text:
+                detail = response.text[:200]
+        raise HTTPException(status_code=401, detail=detail)
     return response.json()
+
+
+@app.get("/api/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
 
 
 @app.post("/api/auth/login")

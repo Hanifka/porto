@@ -3,24 +3,30 @@ services:
     build:
       context: ./backend
     container_name: soc-ticketing-api
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      INDEXER_URL: ${INDEXER_URL:-https://wazuh-indexer:9200}
+      INDEXER_URL: ${INDEXER_URL:-https://127.0.0.1:9200}
       OFFENSE_INDEX: ${OFFENSE_INDEX:-wazuh-offense}
       INDEXER_VERIFY_SSL: ${INDEXER_VERIFY_SSL:-false}
       INDEXER_POLL_USERNAME: ${INDEXER_POLL_USERNAME:-}
       INDEXER_POLL_PASSWORD: ${INDEXER_POLL_PASSWORD:-}
       ALERT_POLL_INTERVAL: ${ALERT_POLL_INTERVAL:-5}
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
 
   soc-ui:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: soc-ticketing-ui
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:8080}
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       - soc-api
