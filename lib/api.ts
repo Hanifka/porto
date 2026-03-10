@@ -21,9 +21,13 @@ function basicHeader(token: string): HeadersInit {
 async function parseError(res: Response, fallback: string): Promise<Error> {
   try {
     const body = await res.json();
-    return new Error(body?.detail ?? fallback);
+    return new Error(body?.detail ?? `${fallback} (HTTP ${res.status})`);
   } catch {
-    return new Error(fallback);
+    try {
+      const text = await res.text();
+      if (text) return new Error(`${fallback} (HTTP ${res.status}): ${text.slice(0, 200)}`);
+    } catch {}
+    return new Error(`${fallback} (HTTP ${res.status})`);
   }
 }
 

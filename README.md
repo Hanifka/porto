@@ -16,8 +16,10 @@ Open: `http://127.0.0.1:3000`
 
 ## Default service ports
 
-- Frontend: `3000`
-- Backend API/WebSocket: `8080`
+- Frontend: `127.0.0.1:3000`
+- Backend API/WebSocket: `127.0.0.1:8080`
+
+Container services bind `0.0.0.0` inside each container, while Docker publishes only to host loopback (`127.0.0.1`).
 
 ## Environment variables
 

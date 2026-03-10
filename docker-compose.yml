@@ -11,7 +11,7 @@ services:
       INDEXER_POLL_PASSWORD: ${INDEXER_POLL_PASSWORD:-}
       ALERT_POLL_INTERVAL: ${ALERT_POLL_INTERVAL:-5}
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
 
   soc-ui:
     build:
@@ -21,6 +21,6 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:8080}
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       - soc-api

@@ -38,7 +38,14 @@ async def verify_credentials(username: str, password: str) -> dict:
         raise HTTPException(status_code=503, detail="Cannot reach Wazuh Indexer") from exc
 
     if response.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid Wazuh Indexer credentials")
+        detail = "Invalid Wazuh Indexer credentials"
+        try:
+            payload = response.json()
+            detail = payload.get("detail") or payload.get("message") or detail
+        except Exception:
+            if response.text:
+                detail = response.text[:200]
+        raise HTTPException(status_code=401, detail=detail)
     return response.json()
 
 
