@@ -8,11 +8,10 @@ export function getApiUrl(): string {
 
   if (typeof window !== "undefined") {
     const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    return `${protocol}//${hostname}:8080`;
+    return `${protocol}//127.0.0.1:8080`;
   }
 
-  return "http://localhost:8080";
+  return "http://127.0.0.1:8080";
 }
 
 function basicHeader(token: string): HeadersInit {

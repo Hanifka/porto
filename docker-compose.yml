@@ -4,7 +4,7 @@ services:
       context: ./backend
     container_name: soc-ticketing-api
     environment:
-      INDEXER_URL: ${INDEXER_URL:?Set INDEXER_URL to your hosted Wazuh Indexer URL}
+      INDEXER_URL: ${INDEXER_URL:-https://127.0.0.1:9200}
       OFFENSE_INDEX: ${OFFENSE_INDEX:-wazuh-offense}
       INDEXER_VERIFY_SSL: ${INDEXER_VERIFY_SSL:-false}
       INDEXER_POLL_USERNAME: ${INDEXER_POLL_USERNAME:-}
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: soc-ticketing-ui
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:8080}
     ports:
       - "3000:3000"
     depends_on:

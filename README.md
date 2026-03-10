@@ -6,13 +6,13 @@ Lightweight SOC ticketing stack built on Wazuh alerts in `wazuh-offense`, using 
 
 ```bash
 cp .env.example .env
-# REQUIRED: set your hosted indexer endpoint
-# INDEXER_URL=https://your-indexer.example.com:9200
+# Optional: override if your Indexer is not local
+# INDEXER_URL=https://127.0.0.1:9200
 
 docker compose up -d --build
 ```
 
-Open: `http://localhost:3000`
+Open: `http://127.0.0.1:3000`
 
 ## Default service ports
 
@@ -21,17 +21,17 @@ Open: `http://localhost:3000`
 
 ## Environment variables
 
-- `INDEXER_URL` (**required**) – your hosted Wazuh Indexer/OpenSearch URL (for example `https://10.10.10.20:9200`)
+- `INDEXER_URL=https://127.0.0.1:9200` (override to your hosted Indexer endpoint when needed)
 - `OFFENSE_INDEX=wazuh-offense`
 - `INDEXER_VERIFY_SSL=false`
 - `INDEXER_POLL_USERNAME` / `INDEXER_POLL_PASSWORD` (optional service account for new-alert polling)
-- `NEXT_PUBLIC_API_URL` (optional override; by default UI auto-targets `http(s)://<current-host>:8080`)
+- `NEXT_PUBLIC_API_URL=http://127.0.0.1:8080` (override as needed)
 
 ## Login troubleshooting
 
 - If login says `Cannot reach API`, verify `soc-api` is up and port `8080` is reachable.
 - If login says `Cannot reach Wazuh Indexer`, verify `INDEXER_URL` points to your hosted Indexer and is reachable from the API container.
-- Test backend health quickly: `curl http://<server>:8080/api/health`
+- Test backend health quickly: `curl http://127.0.0.1:8080/api/health`
 
 ## Docs
 
