@@ -114,11 +114,11 @@ flowchart LR
 
 - `soc-api` (FastAPI)
 - `soc-ui` (Next.js)
-- Both on one Linux server via `docker compose up -d --build`
+- Both on one Linux server via `docker compose up -d --build` with loopback-published ports (`127.0.0.1:3000`, `127.0.0.1:8080`).
 
 ## 10) Installation steps
 
-1. Set env vars (Indexer URL and optional poll service account).
+1. Create `.env` from `.env.example` and set env vars (Indexer URL and optional poll service account).
 2. Run `docker compose up -d --build`.
-3. Open `http://<server>:3000`.
+3. Open `http://127.0.0.1:3000`.
 4. Login with Wazuh Indexer credentials.

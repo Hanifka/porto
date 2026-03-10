@@ -3,6 +3,9 @@ services:
     build:
       context: ./backend
     container_name: soc-ticketing-api
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
       INDEXER_URL: ${INDEXER_URL:-https://127.0.0.1:9200}
       OFFENSE_INDEX: ${OFFENSE_INDEX:-wazuh-offense}
@@ -18,6 +21,9 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: soc-ticketing-ui
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:8080}
     ports:
