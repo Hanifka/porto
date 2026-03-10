@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wazuh SOC Ticketing Platform
 
-## Getting Started
+Lightweight SOC ticketing stack built on Wazuh alerts in `wazuh-offense`, using Wazuh Indexer (OpenSearch) as both datastore and authentication backend.
 
-First, run the development server:
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env  # optional
+docker compose up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Default service ports
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Frontend: `3000`
+- Backend API/WebSocket: `8080`
 
-## Learn More
+## Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+- `INDEXER_URL=https://127.0.0.1:9200`
+- `OFFENSE_INDEX=wazuh-offense`
+- `INDEXER_VERIFY_SSL=false`
+- `INDEXER_POLL_USERNAME` / `INDEXER_POLL_PASSWORD` (optional service account for new-alert polling)
+- `NEXT_PUBLIC_API_URL` (optional override; by default UI auto-targets `http(s)://<current-host>:8080`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Docs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Full architecture, folder tree, query examples, components and deployment notes: `docs/ARCHITECTURE.md`
