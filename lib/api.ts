@@ -1,6 +1,6 @@
 import { DashboardData, Ticket, TicketDetail, TicketStatus } from "./types";
 
-function getApiUrl(): string {
+export function getApiUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_API_URL;
   if (fromEnv && fromEnv.trim().length > 0) {
     return fromEnv;
@@ -29,11 +29,17 @@ async function parseError(res: Response, fallback: string): Promise<Error> {
 }
 
 export async function login(username: string, password: string) {
-  const res = await fetch(`${getApiUrl()}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  });
+  const apiUrl = getApiUrl();
+  let res: Response;
+  try {
+    res = await fetch(`${apiUrl}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+  } catch {
+    throw new Error(`Cannot reach API at ${apiUrl}. Check soc-api container and port 8080.`);
+  }
   if (!res.ok) throw await parseError(res, "Login failed");
   return res.json();
 }

@@ -3,8 +3,10 @@ services:
     build:
       context: ./backend
     container_name: soc-ticketing-api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      INDEXER_URL: ${INDEXER_URL:-https://wazuh-indexer:9200}
+      INDEXER_URL: ${INDEXER_URL:-https://host.docker.internal:9200}
       OFFENSE_INDEX: ${OFFENSE_INDEX:-wazuh-offense}
       INDEXER_VERIFY_SSL: ${INDEXER_VERIFY_SSL:-false}
       INDEXER_POLL_USERNAME: ${INDEXER_POLL_USERNAME:-}

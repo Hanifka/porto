@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getApiUrl } from "@/lib/api";
 
 export default function LoginForm({ onLogin }: { onLogin: (token: string, username: string, password: string) => Promise<void> }) {
   const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ export default function LoginForm({ onLogin }: { onLogin: (token: string, userna
       <input className="mb-3 w-full rounded border border-slate-700 bg-slate-900 p-2" placeholder="Indexer username" value={username} onChange={(e) => setUsername(e.target.value)} />
       <input className="mb-3 w-full rounded border border-slate-700 bg-slate-900 p-2" type="password" placeholder="Indexer password" value={password} onChange={(e) => setPassword(e.target.value)} />
       {error && <p className="mb-2 text-sm text-rose-400">{error}</p>}
+      <p className="mb-3 text-xs text-slate-400">API target: {getApiUrl()}</p>
       <button
         className="w-full rounded bg-cyan-500 px-4 py-2 font-semibold text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
         disabled={submitting || !username || !password}

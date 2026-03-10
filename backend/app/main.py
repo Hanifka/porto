@@ -8,7 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, WebSocket, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .indexer import indexer_delete, indexer_get, indexer_post, indexer_post_ndjson
+from .indexer import indexer_get, indexer_post, indexer_post_ndjson
 from .models import (
     AuthLoginRequest,
     BulkAssignRequest,
