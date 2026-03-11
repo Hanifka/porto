@@ -8,7 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, WebSocket, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .indexer import indexer_get, indexer_post, indexer_post_ndjson
+from .indexer import IndexerConnectionError, indexer_get, indexer_post, indexer_post_ndjson
 from .models import (
     AuthLoginRequest,
     BulkAssignRequest,
@@ -34,8 +34,8 @@ app.add_middleware(
 async def verify_credentials(username: str, password: str) -> dict:
     try:
         response = await indexer_get("/_plugins/_security/authinfo", username, password)
-    except httpx.HTTPError as exc:
-        raise HTTPException(status_code=503, detail="Cannot reach Wazuh Indexer") from exc
+    except IndexerConnectionError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     if response.status_code != 200:
         detail = "Invalid Wazuh Indexer credentials"

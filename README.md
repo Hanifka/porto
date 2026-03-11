@@ -23,7 +23,8 @@ Container services bind `0.0.0.0` inside each container, while Docker publishes 
 
 ## Environment variables
 
-- `INDEXER_URL=https://127.0.0.1:9200` (override to your hosted Indexer endpoint when needed)
+- `INDEXER_URL=https://127.0.0.1:9200` (primary Indexer URL)
+- `INDEXER_FALLBACK_URLS=https://host.docker.internal:9200,http://host.docker.internal:9200` (optional comma-separated fallback URLs)
 - `OFFENSE_INDEX=wazuh-offense`
 - `INDEXER_VERIFY_SSL=false`
 - `INDEXER_POLL_USERNAME` / `INDEXER_POLL_PASSWORD` (optional service account for new-alert polling)
@@ -32,7 +33,7 @@ Container services bind `0.0.0.0` inside each container, while Docker publishes 
 ## Login troubleshooting
 
 - If login says `Cannot reach API`, verify `soc-api` is up and port `8080` is reachable.
-- If login says `Cannot reach Wazuh Indexer`, verify `INDEXER_URL` points to your hosted Indexer and is reachable from the API container.
+- If login says `Cannot reach Wazuh Indexer`, verify `INDEXER_URL` or `INDEXER_FALLBACK_URLS` points to a reachable Indexer from the API container.
 - Test backend health quickly: `curl http://127.0.0.1:8080/api/health`
 
 ## Docs
