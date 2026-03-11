@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wazuh SOC Ticketing Platform
 
-## Getting Started
+Lightweight SOC ticketing stack built on Wazuh alerts in `wazuh-offense`, using Wazuh Indexer (OpenSearch) as both datastore and authentication backend.
 
-First, run the development server:
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
+# Optional: override if your Indexer is not local
+# INDEXER_URL=https://127.0.0.1:9200
+
+docker compose up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open: `http://127.0.0.1:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Default service ports
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Frontend: `127.0.0.1:3000`
+- Backend API/WebSocket: `127.0.0.1:8080`
 
-## Learn More
+Container services bind `0.0.0.0` inside each container, while Docker publishes only to host loopback (`127.0.0.1`).
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `INDEXER_URL=https://127.0.0.1:9200` (primary Indexer URL)
+- `INDEXER_FALLBACK_URLS=https://host.docker.internal:9200,http://host.docker.internal:9200` (optional comma-separated fallback URLs)
+- `OFFENSE_INDEX=wazuh-offense`
+- `INDEXER_VERIFY_SSL=false`
+- `INDEXER_POLL_USERNAME` / `INDEXER_POLL_PASSWORD` (optional service account for new-alert polling)
+- `NEXT_PUBLIC_API_URL=http://127.0.0.1:8080` (override as needed)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Login troubleshooting
 
-## Deploy on Vercel
+- If login says `Cannot reach API`, verify `soc-api` is up and port `8080` is reachable.
+- If login says `Cannot reach Wazuh Indexer`, verify `INDEXER_URL` or `INDEXER_FALLBACK_URLS` points to a reachable Indexer from the API container.
+- Test backend health quickly: `curl http://127.0.0.1:8080/api/health`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Docs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Full architecture, folder tree, query examples, components and deployment notes: `docs/ARCHITECTURE.md`
